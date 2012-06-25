@@ -1,0 +1,14 @@
+Changelog for Upload to Users CMP
+
+1.0.0-beta2
+========================================================================
+- add ListView to the file list
+- add delete menu context to the right clicked file
+
+1.0.0-beta1
+========================================================================
+- initial release
+- Feature:
+  * Batch upload to multiple users
+  * Auto create non-existing folder of the users
+  * List the content of each folder

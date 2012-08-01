@@ -21,7 +21,7 @@
  * Upload to Users CMP; if not, write to the Free Software Foundation, Inc., 59 Temple Place,
  * Suite 330, Boston, MA 02111-1307 USA
  *
- * CMP file delete controller.
+ * CMP delete file controller.
  *
  * @package     uploadtousers
  * @subpackage  controller
@@ -34,12 +34,50 @@ class FilesDeleteProcessor extends modBrowserFileRemoveProcessor {
         return array('uploadtousers', 'file');
     }
 
-    public function initialize() {
-        $basePath = $this->modx->getOption('uploadtousers.base_path');
-        $basePath = str_replace(MODX_BASE_PATH, '', $basePath);
-        $this->setProperty('path', $basePath);
+    public function process() {
+        $props = $this->getProperties();
+        $paths = @explode(',',$props['paths']);
+        $responses = array();
+        $errors = array();
+        foreach($paths as $path) {
+            if (is_dir($path)) {
+                $props['dir'] = $path;
+                $dirRemove = $this->modx->runProcessor('browser/directory/remove', $props);
+                if ($dirRemove) {
+                    $responses[] = $dirRemove->getResponse();
+                } else {
+                    $errors[] = $dirRemove->getMessage();
+                }
+            } else {
+                $path = str_replace(MODX_BASE_PATH, '', $path);
+                $this->setProperty('file', $path);
+                $fileRemove = parent::process();
+                if ($fileRemove) {
+                    $responses[] = $fileRemove;
+                } else {
+                    $errors[] = $dirRemove->getMessage();
+                }
+            }
+        }
+        $output = array(
+            'success' => '',
+            'message' => '',
+            'total' => 0,
+            'errors' => array(),
+            'object' => array()
+        );
+        if (!empty($responses) || !empty($errors)){
+            $output['success'] = 1;
+            $output['total'] = count($responses);
+            foreach ($responses as $res) {
+                $output['object'][] = $res;
+            }
+            foreach ($errors as $err) {
+                $output['errors'][] = $err;
+            }
+        }
 
-        return parent::initialize();
+        return $output;
     }
 
 }

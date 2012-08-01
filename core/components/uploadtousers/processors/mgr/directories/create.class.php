@@ -21,26 +21,25 @@
  * Upload to Users CMP; if not, write to the Free Software Foundation, Inc., 59 Temple Place,
  * Suite 330, Boston, MA 02111-1307 USA
  *
- * CMP file upload controller.
+ * CMP create folder controller.
  *
  * @package     uploadtousers
  * @subpackage  controller
  */
-include_once MODX_CORE_PATH . 'model/modx/processors/browser/file/upload.class.php';
+include_once MODX_CORE_PATH . 'model/modx/processors/browser/directory/create.class.php';
 
-class FilesUploadProcessor extends modBrowserFileUploadProcessor {
+class DirectoriesCreateProcessor extends modBrowserFolderCreateProcessor {
 
     public function getLanguageTopics() {
         return array('uploadtousers', 'file');
     }
 
     public function initialize() {
-        $path = $this->getProperty('path');
-        $path = str_replace(MODX_BASE_PATH, '', $path);
-        $this->setProperty('path', $path);
+        $parent = str_replace(MODX_BASE_PATH, '', $this->getProperty('parent'));
+        $this->setProperty('parent', $parent);
         return parent::initialize();
     }
 
 }
 
-return 'FilesUploadProcessor';
+return 'DirectoriesCreateProcessor';

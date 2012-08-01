@@ -39,7 +39,8 @@ class UploadtousersHomeManagerController extends UploadtousersManagerController 
     public function loadCustomCssJs() {
         $this->addCss($this->uploadtousers->config['cssUrl'].'uploadtousers.css');
         $this->addJavascript($this->uploadtousers->config['jsUrl'].'ext3/ux/fileuploadfield/FileUploadField.js');
-        $this->addJavascript($this->uploadtousers->config['jsUrl'].'mgr/widgets/uploadtousers.grid.js');
+        $this->addJavascript($this->uploadtousers->config['jsUrl'].'mgr/widgets/contents.grid.js');
+        $this->addJavascript($this->uploadtousers->config['jsUrl'].'mgr/widgets/userstree.panel.js');
         $this->addJavascript($this->uploadtousers->config['jsUrl'] . 'mgr/widgets/home.panel.js');
         $this->addLastJavascript($this->uploadtousers->config['jsUrl'] . 'mgr/sections/index.js');
     }

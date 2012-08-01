@@ -21,26 +21,34 @@
  * Upload to Users CMP; if not, write to the Free Software Foundation, Inc., 59 Temple Place,
  * Suite 330, Boston, MA 02111-1307 USA
  *
- * CMP file upload controller.
+ * CMP delete file controller.
  *
  * @package     uploadtousers
  * @subpackage  controller
  */
-include_once MODX_CORE_PATH . 'model/modx/processors/browser/file/upload.class.php';
+include_once MODX_CORE_PATH . 'model/modx/processors/browser/file/remove.class.php';
 
-class FilesUploadProcessor extends modBrowserFileUploadProcessor {
+class DirectoriesDeleteProcessor extends modBrowserFileRemoveProcessor {
 
     public function getLanguageTopics() {
         return array('uploadtousers', 'file');
     }
 
-    public function initialize() {
-        $path = $this->getProperty('path');
-        $path = str_replace(MODX_BASE_PATH, '', $path);
-        $this->setProperty('path', $path);
-        return parent::initialize();
+    public function process() {
+        $props = $this->getProperties();
+        if (is_dir($props['dirPath'])) {
+            $props['dir'] = $props['dirPath'];
+            $dirRemove = $this->modx->runProcessor('browser/directory/remove', $props);
+            if ($dirRemove) {
+                $response = $dirRemove->getResponse();
+                return $response;
+            }
+        } else {
+            $response = parent::process();
+            return $response;
+        }
     }
 
 }
 
-return 'FilesUploadProcessor';
+return 'DirectoriesDeleteProcessor';

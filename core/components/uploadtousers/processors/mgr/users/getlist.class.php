@@ -61,51 +61,51 @@ class UsersGetListProcessor extends modObjectGetListProcessor {
                 , $objectArray['sudo']
                 , $objectArray['blocked']
         );
+        $objectArray['uid'] = $objectArray['id'];
+        unset($objectArray['id']); // avoid Ext component's ID
+        $objectArray['text'] = $objectArray['username'];
 
-        $objectArray['files'] = '';
         $basePath = $this->modx->getOption('uploadtousers.base_path', null, $this->modx->getOption('assets_path') . 'userfiles/');
         if (!is_dir($basePath)) {
             $this->modx->log(modX::LOG_LEVEL_ERROR, $basePath . ' for Upload to Users package does not exist.');
             return $objectArray;
         }
-        $basePath = realpath($basePath) . DIRECTORY_SEPARATOR;
         $folderName = $this->modx->getOption('uploadtousers.foldername');
-        if (!empty($folderName) && $folderName === 'id' || $folderName === 'username') {
+        if (!empty($folderName)) {
             switch ($folderName) {
                 case 'id':
-                    $folderName = $basePath . $objectArray['id'] . DIRECTORY_SEPARATOR;
+                    $dirPath = $basePath . $objectArray['uid'] . '/';
                     break;
                 case 'username':
-                    $folderName = $basePath . $objectArray['username'] . DIRECTORY_SEPARATOR;
+                    $dirPath = $basePath . $objectArray['username'] . '/';
                     break;
                 default:
                     break;
             }
-            $objectArray['files'] = $this->_getDirContents($folderName);
+            $objectArray['leaf'] = $this->_leaf($dirPath);
         }
-        return $objectArray;
-    }
-
-    private function _getDirContents($dirPath) {
-        $output = array();
         if (!is_dir($dirPath)) {
             @mkdir($dirPath);
         }
-        foreach (glob($dirPath . '*') as $filename) {
-            if (!is_file($filename))
-                continue;
-            $size = filesize($filename);
-            $lastmod = filemtime($filename) * 1000;
-            $basePath = realpath(MODX_BASE_PATH) . DIRECTORY_SEPARATOR;
-            $url = str_replace(array($basePath, '\\'), array('','/'), $filename);
-            $output[] = array(
-                'name' => basename($filename),
-                'size' => $size,
-                'lastmod' => $lastmod,
-                'url' => $url
-            );
+        $objectArray['dirPath'] = $dirPath;
+        return $objectArray;
+    }
+
+    private function _leaf($dirPath) {
+        $leaf = true;
+
+        $parentUrl = str_replace(realpath(MODX_BASE_PATH) . DIRECTORY_SEPARATOR, '', $dirPath);
+        $parentUrl = str_replace('\\', '/', $parentUrl);
+
+        $dirs = array();
+        foreach (glob($dirPath . '*', GLOB_ONLYDIR) as $dir) {
+            $dirs[] = $dir;
         }
-        return $output;
+
+        if (!empty($dirs))
+            $leaf = false;
+
+        return $leaf;
     }
 
 }

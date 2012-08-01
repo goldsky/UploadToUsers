@@ -1,5 +1,9 @@
 Changelog for Upload to Users CMP
 
+1.0.0-beta3
+========================================================================
+- rewrote all the CMP interface
+
 1.0.0-beta2
 ========================================================================
 - add ListView to the file list

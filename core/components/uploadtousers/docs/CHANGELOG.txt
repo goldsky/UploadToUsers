@@ -1,5 +1,10 @@
 Changelog for Upload to Users CMP
 
+1.0.0-beta4
+========================================================================
+- renamed the processor filenames to lowercase because of linux's case-sensitive
+  issue
+
 1.0.0-beta3
 ========================================================================
 - rewrote all the CMP interface

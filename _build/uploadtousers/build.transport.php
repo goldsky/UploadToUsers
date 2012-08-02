@@ -36,7 +36,7 @@ set_time_limit(0);
 define('PKG_NAME', 'Upload to Users CMP');
 define('PKG_NAME_LOWER', 'uploadtousers');
 define('PKG_VERSION', '1.0');
-define('PKG_RELEASE', 'beta3');
+define('PKG_RELEASE', 'beta4');
 
 /* override with your own defines here (see build.config.sample.php) */
 require_once dirname(__FILE__) . '/build.config.php';

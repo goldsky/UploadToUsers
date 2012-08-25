@@ -21,33 +21,38 @@
  * Upload to Users CMP; if not, write to the Free Software Foundation, Inc., 59 Temple Place,
  * Suite 330, Boston, MA 02111-1307 USA
  *
- * CMP main model.
+ * CMP get file details controller.
  *
  * @package     uploadtousers
- * @subpackage  model
+ * @subpackage  controller
  */
-class Uploadtousers {
+class FilesGetProcessor extends modObjectGetProcessor {
 
-    public $modx;
-    public $config = array();
+    public $classKey = 'Addendum';
 
-    function __construct(modX &$modx, array $config = array()) {
-        $this->modx = & $modx;
+    /**
+     * {@inheritDoc}
+     * @return boolean
+     */
+    public function initialize() {
+        $props = $this->getProperties();
 
-        $basePath = $this->modx->getOption('core_path') . 'components/uploadtousers/';
-        $assetsUrl = $this->modx->getOption('assets_url') . 'components/uploadtousers/';
-        $this->config = array_merge(array(
-            'basePath' => $basePath,
-            'corePath' => $basePath,
-            'modelPath' => $basePath . 'model/',
-            'processorsPath' => $basePath . 'processors/',
-            'templatesPath' => $basePath . 'templates/',
-            'chunksPath' => $basePath . 'elements/chunks/',
-            'jsUrl' => $assetsUrl . 'js/',
-            'cssUrl' => $assetsUrl . 'css/',
-            'assetsUrl' => $assetsUrl,
-            'connectorUrl' => $assetsUrl . 'connector.php',
-                ), $config);
+        $this->object = $this->modx->getObject($this->classKey, array(
+            'dir_path' => $props['dirPath'],
+            'name' => $props['name']
+        ));
+
+        if (empty($this->object)) {
+            return $this->modx->lexicon($this->objectType . '_err_nfs', $props);
+        }
+
+        if ($this->checkViewPermission && $this->object instanceof modAccessibleObject && !$this->object->checkPolicy('view')) {
+            return $this->modx->lexicon('access_denied');
+        }
+
+        return true;
     }
 
 }
+
+return 'FilesGetProcessor';

@@ -109,7 +109,7 @@ Uploadtousers.panel.Userstree = function(config) {
     /**
      * File upload form
      **/
-    var formPanel = new MODx.FormPanel({
+    var uploadFormPanel = new MODx.FormPanel({
         id: 'uploadfile-form',
         fileUpload: true,
         width: 300,
@@ -132,7 +132,7 @@ Uploadtousers.panel.Userstree = function(config) {
         buttons: [{
             text: _('uploadtousers.upload'),
             handler: function(){
-                if(formPanel.getForm().isValid()){
+                if(uploadFormPanel.getForm().isValid()){
                     var file = Ext.get('form-file').getValue();
                     if (!file){
                         Ext.MessageBox.alert(_('uploadtousers.error'), _('uploadtousers.file_err_ns'));
@@ -143,7 +143,7 @@ Uploadtousers.panel.Userstree = function(config) {
                     var store = contentsGrid.getStore();
                     var dirPath = store.baseParams.dir;
 
-                    formPanel.getForm().submit({
+                    uploadFormPanel.getForm().submit({
                         url: Uploadtousers.config.connectorUrl,
                         params: {
                             action: 'mgr/files/upload',
@@ -162,7 +162,7 @@ Uploadtousers.panel.Userstree = function(config) {
         },{
             text: _('uploadtousers.reset'),
             handler: function(){
-                return formPanel.getForm().reset();
+                return this.getForm().reset();
             }
         },{
             text: _('uploadtousers.cancel'),
@@ -196,7 +196,7 @@ Uploadtousers.panel.Userstree = function(config) {
                 height: 160,
                 modal: true,
                 closeAction: 'hide',
-                items: formPanel
+                items: uploadFormPanel
             }).show();
         }
     }
@@ -205,24 +205,30 @@ Uploadtousers.panel.Userstree = function(config) {
     * Right click menu
     **/
     var treeContextMenu = new Ext.menu.Menu({
-            items: [{
-//                text: 'Upload File',
-//                handler: uploadFile
-//            },'-',{
-                text: _('uploadtousers.createfolder'),
-                handler: createFolderConfirm
-            },'-',{
-                text: _('uploadtousers.delete'),
-                handler: deleteFolderConfirm
-            }]
-        });
+        items: [{
+            text: 'Upload File',
+            handler: uploadFile
+        },'-',{
+            text: _('uploadtousers.createfolder'),
+            handler: createFolderConfirm
+        },'-',{
+            text: _('uploadtousers.delete'),
+            handler: deleteFolderConfirm
+        }]
+    });
 
-    var deleteFileConfirm = function(object, event) {
+    var selectedFiles = function() {
         var filesGrid = Ext.getCmp('uploadtousers-grid-contents');
         var checked = filesGrid.getSelectionModel().getSelections();
+        return checked;
+    }
+
+    var deleteFileConfirm = function(object, event) {
+        var checked = selectedFiles();
         var paths = '';
         Ext.each(checked, function(item,i){
-            paths += ',' + item.data.url;
+            var filePath = item.data.dirPath + item.data.name;
+            paths += ',' + filePath;
         });
         paths = paths.substr(1);
         if (paths.length > 0) {
@@ -251,15 +257,137 @@ Uploadtousers.panel.Userstree = function(config) {
         }
     }
 
-    /**
-    * Right click menu
-    **/
-    var fileContextMenu = new Ext.menu.Menu({
+    var editFile = function(object, event) {
+        /* only for single selected row */
+        var selectedFile = selectedFiles()[0].data;
+
+        var submitEditFile = function() {
+            var editFormPanel = Ext.getCmp('editFormPanel');
+            if (editFormPanel.form.isValid()) {
+                var values = editFormPanel.form.getValues();
+                var queries = {};
+                Ext.iterate(selectedFile, function(key, val){
+                    queries[key] = val;
+                });
+                Ext.iterate(values, function(key, val){
+                    queries[key] = val;
+                });
+
+                MODx.Ajax.request({
+                    url: Uploadtousers.config.connectorUrl,
+                    params: {
+                        action: 'mgr/files/update',
+                        queries: Ext.util.JSON.encode(queries)
+                    },
+                    listeners: {
+                        'success': {
+                            fn:function(response, opts) {
+                                refreshContentsGrid();
+                                Ext.MessageBox.alert(_('uploadtousers.success'), response.message);
+                            },
+                            scope:this
+                        },
+                        'failure': {
+                            fn: function(response, opts) {
+                                console.log('server-side failure with status code ' + response.status);
+                                Ext.MessageBox.alert(_('uploadtousers.error'), response.message);
+                            },
+                            scope:this
+                        }
+                    }
+                });
+                return true;
+            } else{
+                Ext.MessageBox.alert(_('uploadtousers.error'), _('uploadtousers.file.title_err_ns'));
+                return false;
+            }
+        }
+
+        var editFormPanel = new Ext.FormPanel({
+            id: 'editFormPanel',
+            baseCls:'x-plain',
+            stateful:false,
+            monitorValid: true,
+            defaults: {
+                anchor: "100%"
+            },
             items: [{
-                text: _('uploadtousers.delete'),
-                handler: deleteFileConfirm
+                xtype: 'displayfield',
+                fieldLabel: _('uploadtousers.file.dirPath'),
+                name: 'dirPath',
+                value: selectedFile.dirPath
+            },{
+                xtype: 'displayfield',
+                fieldLabel: _('uploadtousers.file.name'),
+                name: 'name',
+                value: selectedFile.name
+            },{
+                xtype: 'textfield',
+                fieldLabel: _('uploadtousers.file.title'),
+                name: 'title',
+                value: selectedFile.title,
+                msgTarget:'side',
+                listeners:{
+                    scope:this,
+                    specialkey: function(f,e){
+                        if(e.getKey()==e.ENTER){
+                            e.stopEvent();
+                            if (submitEditFile())
+                                editFileDialog.close();
+                        }
+                    },
+                    afterrender: function(field) {
+                        field.focus(false, 500);
+                    }
+                }
+            },{
+                xtype: 'textarea',
+                fieldLabel: _('uploadtousers.file.desc'),
+                name: 'description',
+                value: selectedFile.description,
+                preventScrollBars: true
+            }],
+            keys: [{
+              key: [Ext.EventObject.ENTER],
+                handler: function(keyCode, event) {
+                    event.preventDefault();
+                    if (!editFormPanel.getForm().isValid()){
+                        return;
+                    } else if (event.getTarget() == 'description'){
+                        return;
+                    } else {
+                        if (submitEditFile())
+                            editFileDialog.close();
+                    }
+                }
             }]
         });
+
+        var editFileDialog = new MODx.Window({
+            title: _('uploadtousers.edit'),
+            autoHeight:true,
+            resizable:false,
+            modal:true,
+            bodyStyle:'padding:5px;',
+            buttonAlign:'center',
+            stateful:false,
+            items: editFormPanel,
+            buttons: [
+            {
+                text: 'Save',
+                handler: function() {
+                    submitEditFile();
+                    editFileDialog.close();
+                }
+            },{
+                text: 'Cancel',
+                handler: function(){
+                    editFileDialog.close();
+                }
+            }]
+        });
+        editFileDialog.show();
+    }
 
     var refreshTree = function(parentId){
         parentId = Number(parentId) ? Number(parentId) : 0;
@@ -297,7 +425,7 @@ Uploadtousers.panel.Userstree = function(config) {
                 /* overide the loader */
                 this.baseParams = {
                     action: 'mgr/directories/getFolders'
-                    //,dirPath: escDirPath // defined below!
+                //,dirPath: escDirPath // defined below!
                 };
             },
             beforeload: function(object, node, callback) {
@@ -315,9 +443,9 @@ Uploadtousers.panel.Userstree = function(config) {
     var centerPanel = function(node) {
         var headersContent = '', contentsHeaderHeight;
         if (node.attributes.email) {
-            headersContent += node.attributes.text + '<br \/>';
-            headersContent += node.attributes.fullname ? node.attributes.fullname + '<br \/>' : '';
-            headersContent += node.attributes.email ? node.attributes.email + '<br \/>' : '';
+            headersContent += _('uploadtousers.username') + ': ' + node.attributes.text + '<br \/>';
+            headersContent += node.attributes.fullname ? _('uploadtousers.fullname') + ': ' + node.attributes.fullname + '<br \/>' : '';
+            headersContent += _('uploadtousers.email') + ': ' + node.attributes.email + '<br \/>';
             contentsHeaderHeight = 80;
         } else {
             contentsHeaderHeight = 0;
@@ -333,7 +461,9 @@ Uploadtousers.panel.Userstree = function(config) {
             html: headersContent
         });
 
-        var checkbox = new Ext.grid.CheckboxSelectionModel();
+        var checkbox = new Ext.grid.CheckboxSelectionModel({
+            checkOnly: true
+        });
 
         var contentsGrid = new MODx.grid.Grid({
             id: 'uploadtousers-grid-contents',
@@ -362,22 +492,35 @@ Uploadtousers.panel.Userstree = function(config) {
                 action: 'mgr/directories/getFiles',
                 dir: node.attributes.dirPath
             },
-            fields: ['name','lastmod','size','url','parentUrl'],
+            fields: ['id','title','description','name','lastmod','size','dirPath'],
 
-//            paging: true,
-//            remoteSort: true,
+            //paging: true,
+            //remoteSort: true,
             autoExpandColumn: 'name',
             fileUpload : true,
             sm: checkbox,
             columns: [
             checkbox,
             {
+                header: _('uploadtousers.file.title'),
+                dataIndex: 'title',
+                sortable: true
+            },
+            {
+                header: _('uploadtousers.file.desc'),
+                dataIndex: 'description',
+                sortable: true
+            },
+            {
                 header: _('uploadtousers.file'),
                 dataIndex: 'name',
+                width: 80,
                 sortable: true
             },{
-                header: _('uploadtousers.lastmodified'),
+                header: _('uploadtousers.modified'),
                 dataIndex: 'lastmod',
+                width: 80,
+                sortable: false,
                 renderer: function(value) {
                     var date = new Date(value);
                     return date.format('Y-m-d');
@@ -387,15 +530,33 @@ Uploadtousers.panel.Userstree = function(config) {
                 dataIndex: 'size',
                 align: 'right',
                 cls: 'listview-filesize',
+                width: 80,
+                sortable: false,
                 renderer: function(value) {
                     return Ext.util.Format.fileSize(value);
-                },
-                sortable: false
+                }
             }],
+            listeners: {
+                rowcontextmenu: function (object, rowIndex, event) {
+                    event.preventDefault();
+                    object.getSelectionModel().clearSelections();
+                    return fileContextMenu.showAt(event.getXY());
+                }
+            },
             collapsible: true,
             animCollapse: false,
             iconCls: 'icon-grid',
             remove: function(){} // overrides MODX grid's config
+        });
+
+        var fileContextMenu = new Ext.menu.Menu({
+            items: [{
+                text: _('uploadtousers.edit'),
+                handler: editFile
+            },'-',{
+                text: _('uploadtousers.delete'),
+                handler: deleteFileConfirm
+            }]
         });
 
         var contentsPanel = Ext.getCmp('uploadtousers-panel-contents');
@@ -413,7 +574,7 @@ Uploadtousers.panel.Userstree = function(config) {
     Ext.apply(config,{
         id: 'uploadtousers-panel-userstree',
         xtype: 'treepanel',
-//        xtype: 'modx-tree',
+        //xtype: 'modx-tree',
         region: 'west',
         margins: '0 0 0 0',
         cmargins: '0 0 0 5',
@@ -473,7 +634,7 @@ Uploadtousers.panel.Userstree = function(config) {
                 return contentsPanel.doLayout();
             }
         }
-//        ,_saveState: function(n) {} // overrides MODX grid's config
+    //,_saveState: function(n) {} // overrides MODX grid's config
     });
 
     Uploadtousers.panel.Userstree.superclass.constructor.call(this,config);

@@ -26,7 +26,7 @@
  * @package     uploadtousers
  * @subpackage  controller
  */
-require_once dirname(__FILE__) . '/model/uploadtousers/uploadtousers.class.php';
+require_once dirname(__FILE__) . '/model/uploadtousers.class.php';
 
 abstract class UploadtousersManagerController extends modExtraManagerController {
 

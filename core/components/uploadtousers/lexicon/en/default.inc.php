@@ -32,30 +32,23 @@ $_lang['uploadtousers.desc'] = 'Upload files to Users\' folders';
 $_lang['uploadtousers.title'] = 'Upload to Users';
 $_lang['uploadtousers.title_desc'] = 'Click the [+] button to see their files.<br />
     The root folder is set on the System Settings<br />
-    Click "Upload" button to (batch) upload a file after selecting any checkbox(es).';
-$_lang['uploadtousers.userstab'] = 'Users list';
+    Click "Upload" button to upload a file to the selected folder.';
 $_lang['uploadtousers.username'] = 'Username';
 $_lang['uploadtousers.fullname'] = 'Full name';
 $_lang['uploadtousers.email'] = 'Email';
-$_lang['uploadtousers.upload'] = 'Upload';
-$_lang['uploadtousers.status'] = 'Status';
 $_lang['uploadtousers.error'] = 'Error';
-$_lang['uploadtousers.error.fn.copy.ne'] = 'PHP\'s "error" function does not exist';
 $_lang['uploadtousers.error.file.ne'] = 'File does not exist';
-$_lang['uploadtousers.search...'] = 'Search user...';
 $_lang['uploadtousers.upload'] = 'Upload';
 $_lang['uploadtousers.reset'] = 'Reset';
 $_lang['uploadtousers.cancel'] = 'Cancel';
 $_lang['uploadtousers.refresh'] = 'Refresh';
-$_lang['uploadtousers.copies'] = 'copies';
 $_lang['uploadtousers.success'] = 'Success';
-$_lang['uploadtousers.success_msg'] = ' is uploaded';
 $_lang['uploadtousers.waiting_msg'] = 'Uploading your file...';
 $_lang['uploadtousers.browse'] = 'Browse...';
 $_lang['uploadtousers.files'] = 'File(s)';
 $_lang['uploadtousers.file'] = 'File';
 $_lang['uploadtousers.file.select'] = 'Select a File';
-$_lang['uploadtousers.lastmodified'] = 'Last Modified';
+$_lang['uploadtousers.modified'] = 'Modified';
 $_lang['uploadtousers.size'] = 'Size';
 $_lang['uploadtousers.delete'] = 'Delete';
 $_lang['uploadtousers.delete.confirmation.title'] = 'Delete Confirmation';
@@ -77,4 +70,10 @@ $_lang['setting_uploadtousers.foldername'] = 'Auto generated folder\'s name';
 $_lang['setting_uploadtousers.foldername_desc'] = 'Auto generate users\' folders by : id or username.';
 
 $_lang['uploadtousers.file_err_ns'] = 'Please select a file to upload.';
-$_lang['uploadtousers.users_err_ns'] = 'Please select user(s).';
+
+$_lang['uploadtousers.file.dirPath'] = 'Folder path';
+$_lang['uploadtousers.file.name'] = 'Name';
+$_lang['uploadtousers.file.title'] = 'Title';
+$_lang['uploadtousers.file.title_err_ns'] = 'Please specify the title.';
+$_lang['uploadtousers.file.desc'] = 'Description';
+$_lang['uploadtousers.edit'] = 'Edit';

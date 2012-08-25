@@ -1,5 +1,15 @@
 Changelog for Upload to Users CMP
 
+1.0.1-pl
+========================================================================
+- fixed a slight bug on snippet regarding the directory's naming on db query
+
+1.0.0-pl
+========================================================================
+- added a table into the database to store Title and Description of the files/folders
+- added snippet to call the data from database, and use FileDownload/FileLister
+  to feed the path
+
 1.0.0-beta4
 ========================================================================
 - renamed the processor filenames to lowercase because of linux's case-sensitive

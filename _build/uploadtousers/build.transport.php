@@ -35,8 +35,8 @@ set_time_limit(0);
 /* define version */
 define('PKG_NAME', 'Upload to Users CMP');
 define('PKG_NAME_LOWER', 'uploadtousers');
-define('PKG_VERSION', '1.0');
-define('PKG_RELEASE', 'beta4');
+define('PKG_VERSION', '1.0.1');
+define('PKG_RELEASE', 'pl');
 
 /* override with your own defines here (see build.config.sample.php) */
 require_once dirname(__FILE__) . '/build.config.php';
@@ -47,8 +47,9 @@ $root = dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR;
 $sources = array(
     'root' => $root,
     'build' => BUILD_PATH,
-    'validators' => BUILD_PATH . 'validators' . DIRECTORY_SEPARATOR,
     'data' => BUILD_PATH . 'data' . DIRECTORY_SEPARATOR,
+    'resolvers' => realpath(BUILD_PATH . 'resolvers/') . DIRECTORY_SEPARATOR,
+    'validators' => BUILD_PATH . 'validators' . DIRECTORY_SEPARATOR,
     'source_core' => realpath(MODX_CORE_PATH . 'components') . DIRECTORY_SEPARATOR . PKG_NAME_LOWER,
     'source_assets' => realpath(MODX_ASSETS_PATH . 'components') . DIRECTORY_SEPARATOR . PKG_NAME_LOWER,
     'docs' => realpath(MODX_CORE_PATH . 'components/' . PKG_NAME_LOWER . '/docs/') . DIRECTORY_SEPARATOR,
@@ -98,6 +99,22 @@ $category->set('category', PKG_NAME);
 $modx->log(modX::LOG_LEVEL_INFO, 'Category done.');
 flush();
 
+/* add snippets */
+$modx->log(modX::LOG_LEVEL_INFO, 'Packaging in snippets...');
+flush();
+$snippets = include $sources['data'] . 'transport.snippets.php';
+if (empty($snippets))
+    $modx->log(modX::LOG_LEVEL_ERROR, 'Could not package in snippets.');
+$category->addMany($snippets);
+
+/* add chunks */
+$modx->log(modX::LOG_LEVEL_INFO, 'Packaging in chunks...');
+flush();
+$chunks = include $sources['data'] . 'transport.chunks.php';
+if (empty($chunks))
+    $modx->log(modX::LOG_LEVEL_ERROR, 'Could not pack in chunks.');
+$category->addMany($chunks);
+
 /* create category vehicle */
 $modx->log(modX::LOG_LEVEL_INFO, 'Packaging in category...');
 flush();
@@ -112,9 +129,29 @@ $attr = array(
             xPDOTransport::UPDATE_OBJECT => true,
             xPDOTransport::UNIQUE_KEY => 'name',
         ),
+        'Chunks' => array(
+            xPDOTransport::PRESERVE_KEYS => false,
+            xPDOTransport::UPDATE_OBJECT => true,
+            xPDOTransport::UNIQUE_KEY => 'name',
+        )
     )
 );
 $vehicle = $builder->createVehicle($category, $attr);
+
+$modx->log(modX::LOG_LEVEL_INFO, 'Adding in PHP resolvers...');
+flush();
+$vehicle->resolve('php', array(
+    'source' => $sources['resolvers'] . 'tables.resolver.php',
+));
+$builder->putVehicle($vehicle);
+
+$modx->log(modX::LOG_LEVEL_INFO, 'PHP resolvers done.');
+$modx->log(modX::LOG_LEVEL_INFO, 'Adding in PHP validators...');
+flush();
+$vehicle->resolve('php', array(
+    'source' => $sources['validators'] . 'setup.options.validator.php',
+));
+$modx->log(modX::LOG_LEVEL_INFO, 'PHP validators done.');
 
 $modx->log(modX::LOG_LEVEL_INFO, 'Adding file resolvers to category...');
 flush();
@@ -126,20 +163,10 @@ $vehicle->resolve('file', array(
     'source' => $sources['source_core'],
     'target' => "return MODX_CORE_PATH . 'components/';",
 ));
-
 $modx->log(modX::LOG_LEVEL_INFO, 'File resolvers done.');
-flush();
 
-$modx->log(modX::LOG_LEVEL_INFO, 'Adding in PHP validators...');
-flush();
-$vehicle->resolve('php', array(
-    'source' => $sources['validators'] . 'setup.options.validator.php',
-));
 $builder->putVehicle($vehicle);
 unset($vehicle);
-
-$modx->log(modX::LOG_LEVEL_INFO, 'PHP validators done.');
-flush();
 
 /* now pack in the license file, readme and setup options */
 $modx->log(modX::LOG_LEVEL_INFO, 'Packaging in attributes');

@@ -5,7 +5,7 @@ require_once MODX_CORE_PATH . 'config/' . MODX_CONFIG_KEY . '.inc.php';
 require_once MODX_CONNECTORS_PATH . 'index.php';
 
 $corePath = $modx->getOption('core_path') . 'components/uploadtousers/';
-require_once $corePath . 'model/uploadtousers/uploadtousers.class.php';
+require_once $corePath . 'model/uploadtousers.class.php';
 $modx->uploadtousers = new Uploadtousers($modx);
 
 $modx->lexicon->load('uploadtousers:default');

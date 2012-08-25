@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model package="uploadtousers" baseClass="xPDOObject" platform="mysql" defaultEngine="MyISAM" version="1.1">
+	<object class="Addendum" table="addendum" extends="xPDOSimpleObject">
+		<field key="dir_path" dbtype="text" phptype="string" null="false" />
+		<field key="name" dbtype="text" phptype="string" null="false" />
+		<field key="title" dbtype="varchar" precision="255" phptype="string" null="false" />
+		<field key="description" dbtype="text" phptype="string" null="true" />
+	</object>
+</model>

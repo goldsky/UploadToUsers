@@ -3,7 +3,7 @@
 /**
  * Upload to Users CMP
  *
- * Copyright 2012 by goldsky <goldsky@modx-id.com>
+ * Copyright 2013 by goldsky <goldsky@virtudraft.com>
  *
  * This file is part of Upload to Users CMP, a back end manager to upload files
  * into the registered members' folders.
@@ -57,7 +57,7 @@ class DirectoriesGetFoldersProcessor extends modBrowserFolderGetListProcessor {
 
         $parentUrl = str_replace(realpath(MODX_BASE_PATH) . DIRECTORY_SEPARATOR, '', $dirPath);
         $parentUrl = str_replace('\\', '/', $parentUrl);
-
+        $userId = $this->getProperty('uid');
         foreach (glob($dirPath . '*', GLOB_ONLYDIR) as $dir) {
             $lastmod = filemtime($dir) * 1000;
             $dirs[] = array(
@@ -66,7 +66,9 @@ class DirectoriesGetFoldersProcessor extends modBrowserFolderGetListProcessor {
                 'size' => '',
                 'lastmod' => $lastmod,
                 'dirPath' => $dir . '/',
-                'leaf' => $this->_leaf($dir . '/')
+                'leaf' => $this->_leaf($dir . '/'),
+                'type' => 'dir',
+                'uid' => intval($userId),
             );
         }
 

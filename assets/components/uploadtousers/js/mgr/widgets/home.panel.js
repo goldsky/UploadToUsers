@@ -43,7 +43,7 @@ Uploadtousers.panel.Home = function(config) {
             preventRender: true,
             region: 'left'
         },{
-            xtype: 'uploadtousers-panel-contents',
+            xtype: 'uploadtousers-panel-content',
             collapsible: false,
             preventRender: true,
             region: 'center'

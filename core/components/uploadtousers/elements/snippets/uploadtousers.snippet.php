@@ -2,7 +2,7 @@
 /**
  * Upload to Users CMP
  *
- * Copyright 2012 by goldsky <goldsky@modx-id.com>
+ * Copyright 2013 by goldsky <goldsky@virtudraft.com>
  *
  * This file is part of Upload to Users CMP, a back end manager to upload files
  * into the registered members' folders.

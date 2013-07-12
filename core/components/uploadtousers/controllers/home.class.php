@@ -3,7 +3,7 @@
 /**
  * Upload to Users CMP
  *
- * Copyright 2012 by goldsky <goldsky@modx-id.com>
+ * Copyright 2013 by goldsky <goldsky@virtudraft.com>
  *
  * This file is part of Upload to Users CMP, a back end manager to upload files
  * into the registered members' folders.
@@ -39,7 +39,13 @@ class UploadtousersHomeManagerController extends UploadtousersManagerController 
     public function loadCustomCssJs() {
         $this->addCss($this->uploadtousers->config['cssUrl'].'uploadtousers.css');
         $this->addJavascript($this->uploadtousers->config['jsUrl'].'ext3/ux/fileuploadfield/FileUploadField.js');
-        $this->addJavascript($this->uploadtousers->config['jsUrl'].'mgr/widgets/contents.grid.js');
+        $this->addJavascript($this->uploadtousers->config['jsUrl'].'mgr/widgets/file.window.js');
+        $this->addJavascript($this->uploadtousers->config['jsUrl'].'mgr/widgets/files.grid.js');
+        $this->addJavascript($this->uploadtousers->config['jsUrl'].'mgr/widgets/folder.panel.js');
+        $this->addJavascript($this->uploadtousers->config['jsUrl'].'mgr/widgets/user.panel.js');
+        $this->addJavascript($this->uploadtousers->config['jsUrl'].'mgr/widgets/content.panel.js');
+        $this->addJavascript($this->uploadtousers->config['jsUrl'].'mgr/widgets/upload.form.panel.js');
+        $this->addJavascript($this->uploadtousers->config['jsUrl'].'mgr/widgets/file.upload.window.js');
         $this->addJavascript($this->uploadtousers->config['jsUrl'].'mgr/widgets/userstree.panel.js');
         $this->addJavascript($this->uploadtousers->config['jsUrl'] . 'mgr/widgets/home.panel.js');
         $this->addLastJavascript($this->uploadtousers->config['jsUrl'] . 'mgr/sections/index.js');

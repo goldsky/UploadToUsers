@@ -3,7 +3,7 @@
 /**
  * Upload to Users CMP
  *
- * Copyright 2012 by goldsky <goldsky@modx-id.com>
+ * Copyright 2013 by goldsky <goldsky@virtudraft.com>
  *
  * This file is part of Upload to Users CMP, a back end manager to upload files
  * into the registered members' folders.
@@ -88,8 +88,7 @@ class UsersGetListProcessor extends modObjectGetListProcessor {
                 , $objectArray['blocked']
         );
         $objectArray['uid'] = $objectArray['id'];
-        unset($objectArray['id']); // avoid Ext component's ID
-        $objectArray['text'] = $objectArray['username'];
+        $objectArray['text'] = $objectArray['username'] . ' (' . $objectArray['id'] . ')';
 
         $basePath = $this->modx->getOption('uploadtousers.base_path', null, $this->modx->getOption('assets_path') . 'userfiles/');
         if (!is_dir($basePath)) {
@@ -114,6 +113,9 @@ class UsersGetListProcessor extends modObjectGetListProcessor {
             @mkdir($dirPath);
         }
         $objectArray['dirPath'] = $dirPath;
+        $objectArray['type'] = 'user';
+        unset($objectArray['id']); // avoid Ext component's ID
+
         return $objectArray;
     }
 

@@ -30,7 +30,7 @@ $xpdo_meta_map['Addendum']= array (
       'dbtype' => 'varchar',
       'precision' => '255',
       'phptype' => 'string',
-      'null' => false,
+      'null' => true,
     ),
     'description' => 
     array (

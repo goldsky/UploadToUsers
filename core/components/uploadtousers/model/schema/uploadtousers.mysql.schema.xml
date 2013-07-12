@@ -3,7 +3,7 @@
 	<object class="Addendum" table="addendum" extends="xPDOSimpleObject">
 		<field key="dir_path" dbtype="text" phptype="string" null="false" />
 		<field key="name" dbtype="text" phptype="string" null="false" />
-		<field key="title" dbtype="varchar" precision="255" phptype="string" null="false" />
+		<field key="title" dbtype="varchar" precision="255" phptype="string" null="true" />
 		<field key="description" dbtype="text" phptype="string" null="true" />
 	</object>
 </model>

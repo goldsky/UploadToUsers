@@ -28,7 +28,7 @@
  */
 class FilesGetProcessor extends modObjectGetProcessor {
 
-    public $classKey = 'Addendum';
+    public $classKey = 'u2uAddendum';
 
     /**
      * {@inheritDoc}
@@ -36,7 +36,6 @@ class FilesGetProcessor extends modObjectGetProcessor {
      */
     public function initialize() {
         $props = $this->getProperties();
-
         $this->object = $this->modx->getObject($this->classKey, array(
             'dir_path' => $props['dirPath'],
             'name' => $props['name']

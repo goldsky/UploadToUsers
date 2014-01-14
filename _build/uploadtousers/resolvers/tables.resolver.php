@@ -32,7 +32,7 @@ if ($modx = & $object->xpdo) {
             $modelPath = $modx->getOption('core_path') . 'components/uploadtousers/model/';
             $modx->addPackage('uploadtousers', realpath($modelPath) . DIRECTORY_SEPARATOR, $modx->config[modX::OPT_TABLE_PREFIX] . 'uploadtousers_');
             $manager = $modx->getManager();
-            $manager->createObjectContainer('Addendum');
+            $manager->createObjectContainer('u2uAddendum');
             break;
         case xPDOTransport::ACTION_UPGRADE:
         case xPDOTransport::ACTION_UNINSTALL:

@@ -129,7 +129,7 @@ Ext.extend(Uploadtousers.panel.Userstree, MODx.tree.Tree, {
             xtype: 'uploadtousers-window-file-upload',
             node: selectedNode.attributes
         });
-        return uploadFileWindow.show(e.target);
+        return uploadFileWindow.show();
     },
     userPanel: function(node) {
         var contentPanel = Ext.getCmp('uploadtousers-panel-content');

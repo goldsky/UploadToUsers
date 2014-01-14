@@ -3,6 +3,6 @@
 $xpdo_meta_map = array (
   'xPDOSimpleObject' => 
   array (
-    0 => 'Addendum',
+    0 => 'u2uAddendum',
   ),
 );

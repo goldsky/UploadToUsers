@@ -1,5 +1,5 @@
 <?php
-$xpdo_meta_map['Addendum']= array (
+$xpdo_meta_map['u2uAddendum']= array (
   'package' => 'uploadtousers',
   'version' => '1.1',
   'table' => 'addendum',

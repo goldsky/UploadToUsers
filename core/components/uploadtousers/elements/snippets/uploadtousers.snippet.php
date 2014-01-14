@@ -44,7 +44,7 @@ $uptousers = $modx->getService('uploadtousers'
 if (!($uptousers instanceof Uploadtousers))
     return 'instanceof error.';
 
-$c = $modx->newQuery('Addendum');
+$c = $modx->newQuery('u2uAddendum');
 $dirPath = dirname($path);
 $dirPath = str_replace('\\', '/', $dirPath) . '/';
 $slash = is_dir($path) ? '/' : '';
@@ -53,7 +53,7 @@ $c->where(array(
     'dir_path' => $dirPath,
     'name' => $name
 ));
-$fileDetail = $modx->getObject('Addendum', $c);
+$fileDetail = $modx->getObject('u2uAddendum', $c);
 if (!empty($fileDetail)) {
     if (!empty($toArray)) {
         $contents = array();

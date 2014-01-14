@@ -13,6 +13,9 @@ Uploadtousers.window.File = function(config) {
         buttonAlign: 'center',
         fields: [
             {
+                xtype: 'hidden',
+                name: 'id'
+            }, {
                 xtype: 'displayfield',
                 fieldLabel: _('uploadtousers.file.dirPath'),
                 name: 'dirPath'
@@ -51,7 +54,7 @@ Uploadtousers.window.File = function(config) {
                     var elem = event.getTarget();
                     var component = Ext.getCmp(elem.id);
                     if (component instanceof Ext.form.TextArea) {
-                        return;
+                        return component.append("\n");
                     } else if (!this.fp.getForm().isValid()) {
                         return;
                     } else {

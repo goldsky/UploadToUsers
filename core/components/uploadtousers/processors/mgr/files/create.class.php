@@ -29,7 +29,7 @@
 class FilesCreateProcessor extends modObjectCreateProcessor {
 
     /** @var string $classKey The class key of the Object to iterate */
-    public $classKey = 'Addendum';
+    public $classKey = 'u2uAddendum';
 
     /**
      * {@inheritDoc}

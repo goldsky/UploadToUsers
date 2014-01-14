@@ -15,7 +15,8 @@ Uploadtousers.panel.Folder = function(config) {
         },
         items: [
             {
-                html: '<strong>' + _('uploadtousers.file.dirPath') + ': ' + config.node.attributes.dirPath + '</strong>'
+                html: '<strong>' + _('uploadtousers.username') + ': ' + config.node.attributes.username + ' (' + config.node.attributes.uid + ')</strong><br>' +
+                        '<strong>' + _('uploadtousers.file.dirPath') + ': ' + config.node.attributes.dirPath + '</strong>'
             }, {
                 xtype: 'uploadtousers-grid-files',
                 node: config.node

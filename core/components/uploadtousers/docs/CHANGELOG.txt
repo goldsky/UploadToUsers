@@ -1,5 +1,11 @@
 Changelog for Upload to Users CMP
 
+1.1.1-pl (January 14, 2014)
+========================================================================
+- renamed schema's objects
+- bugfixed upload window on re-showing
+- bugfixed file's info editing
+
 1.1.0-pl (July 12, 2013)
 ========================================================================
 - #2 fixed custom table prefix

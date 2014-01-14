@@ -58,6 +58,11 @@ class DirectoriesGetFoldersProcessor extends modBrowserFolderGetListProcessor {
         $parentUrl = str_replace(realpath(MODX_BASE_PATH) . DIRECTORY_SEPARATOR, '', $dirPath);
         $parentUrl = str_replace('\\', '/', $parentUrl);
         $userId = $this->getProperty('uid');
+        $user = $this->modx->getObject('modUser', $userId);
+        $userName = '';
+        if ($user) {
+            $userName = $user->get('username');
+        }
         foreach (glob($dirPath . '*', GLOB_ONLYDIR) as $dir) {
             $lastmod = filemtime($dir) * 1000;
             $dirs[] = array(
@@ -69,6 +74,7 @@ class DirectoriesGetFoldersProcessor extends modBrowserFolderGetListProcessor {
                 'leaf' => $this->_leaf($dir . '/'),
                 'type' => 'dir',
                 'uid' => intval($userId),
+                'username' => $userName,
             );
         }
 

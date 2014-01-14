@@ -2,7 +2,15 @@ Uploadtousers.grid.Files = function(config) {
     config = config || {};
 
     var checkbox = new Ext.grid.CheckboxSelectionModel({
-        checkOnly: true
+        checkOnly: true,
+        listeners: {
+            'selectionchange': {
+                fn: function() {
+                    return this.toogleDeleteButton();
+                },
+                scope: this
+            }
+        }
     });
 
     Ext.applyIf(config, {
@@ -65,13 +73,17 @@ Uploadtousers.grid.Files = function(config) {
                 handler: this.refresh
             }, {
                 text: _('uploadtousers.upload'),
-                handler: {
-                    xtype: 'uploadtousers-window-file-upload',
-                    blankValues: true,
-                    node: config.node ? config.node : ''
+                handler: function() {
+                    var fileWin = new Uploadtousers.window.FileUpload({
+                        blankValues: true,
+                        node: config.node ? config.node : ''
+                    });
+                    return fileWin.show();
                 }
             }, {
                 text: _('uploadtousers.delete'),
+                id: 'uploadtousers-grid-tbar-delete',
+                disabled: true,
                 handler: this.deleteFileConfirm
             }
         ]
@@ -88,33 +100,28 @@ Ext.extend(Uploadtousers.grid.Files, MODx.grid.Grid, {
                 handler: this.editFile
             }, '-', {
                 text: _('uploadtousers.delete'),
-                handler: function() {
-                    return this.deleteFileConfirm();
-                },
-                scope: this
+                handler: this.deleteFileConfirm
             }
         ];
     },
     editFile: function(btn, e) {
-        if (!this.fileWindow) {
-            this.fileWindow = MODx.load({
-                xtype: 'uploadtousers-window-file',
-                title: _('uploadtousers.edit'),
-                baseParams: {
-                    action: 'mgr/files/update',
-                    id: this.menu.record.id
-                },
-                listeners: {
-                    'success': {
-                        fn: this.refresh,
-                        scope: this
-                    }
+        var fileWindow = MODx.load({
+            xtype: 'uploadtousers-window-file',
+            title: _('uploadtousers.edit'),
+            baseParams: {
+                action: 'mgr/files/update',
+                id: this.menu.record.id
+            },
+            listeners: {
+                'success': {
+                    fn: this.refresh,
+                    scope: this
                 }
-            });
-        }
+            }
+        });
 
-        this.fileWindow.setValues(this.menu.record);
-        return this.fileWindow.show(e.target);
+        fileWindow.setValues(this.menu.record);
+        return fileWindow.show(e.target);
     },
     deleteFileConfirm: function(object, event) {
         var selectedFiles = this.getSelectionModel().getSelections();
@@ -169,6 +176,15 @@ Ext.extend(Uploadtousers.grid.Files, MODx.grid.Grid, {
         } else {
             Ext.MessageBox.alert(_('uploadtousers.error'), _('uploadtousers.error.file.ne'));
             return false;
+        }
+    },
+    toogleDeleteButton: function() {
+        var selectedFiles = this.getSelectionModel().getSelections();
+        var deleteBtn = Ext.getCmp('uploadtousers-grid-tbar-delete');
+        if (selectedFiles.length > 0) {
+            deleteBtn.enable();
+        } else {
+            deleteBtn.disable();
         }
     }
 });

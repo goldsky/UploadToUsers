@@ -44,7 +44,6 @@ class UploadtousersHomeManagerController extends UploadtousersManagerController 
         $this->addJavascript($this->uploadtousers->config['jsUrl'].'mgr/widgets/folder.panel.js');
         $this->addJavascript($this->uploadtousers->config['jsUrl'].'mgr/widgets/user.panel.js');
         $this->addJavascript($this->uploadtousers->config['jsUrl'].'mgr/widgets/content.panel.js');
-        $this->addJavascript($this->uploadtousers->config['jsUrl'].'mgr/widgets/upload.form.panel.js');
         $this->addJavascript($this->uploadtousers->config['jsUrl'].'mgr/widgets/file.upload.window.js');
         $this->addJavascript($this->uploadtousers->config['jsUrl'].'mgr/widgets/userstree.panel.js');
         $this->addJavascript($this->uploadtousers->config['jsUrl'] . 'mgr/widgets/home.panel.js');
